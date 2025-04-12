@@ -27,7 +27,11 @@ const SignUpPage = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState({ open: false, message: "", severity: "success" });
+  const [toast, setToast] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   const validate = () => {
     let newErrors = {};
@@ -65,7 +69,11 @@ const SignUpPage = () => {
         throw new Error(data.message || "Sign up failed");
       }
 
-      setToast({ open: true, message: "Account created successfully!", severity: "success" });
+      setToast({
+        open: true,
+        message: "Account created successfully!",
+        severity: "success",
+      });
       setTimeout(() => navigate("/login"), 2000);
     } catch (error) {
       setToast({ open: true, message: error.message, severity: "error" });
@@ -75,13 +83,21 @@ const SignUpPage = () => {
   };
 
   return (
-    <Container maxWidth="md">
+    <div className="yeah">
+        <Container className="yoo" maxWidth="md">
       <Typography className="topa" variant="h4" align="center" gutterBottom>
-        Join a community of readers and writers
+         Start your journey with us. Connect with people of your caliber.
       </Typography>
 
       <form onSubmit={handleSubmit} noValidate>
-        {["firstName", "lastName", "email", "username", "password", "confirmPassword"].map((field, index) => (
+        {[
+          "firstName",
+          "lastName",
+          "email",
+          "username",
+          "password",
+          "confirmPassword",
+        ].map((field, index) => (
           <TextField
             key={index}
             margin="normal"
@@ -97,14 +113,24 @@ const SignUpPage = () => {
         ))}
 
         <Box mt={2} display="flex" justifyContent="center">
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
+          >
             {loading ? <CircularProgress size={24} /> : "Create Account"}
           </Button>
         </Box>
         <Box mt={2} textAlign="center">
           <Typography variant="body2">
             Already have an account?{" "}
-            <a href="/login" style={{ color: "#1976d2", textDecoration: "none" }}>Login</a>
+            <a
+              href="/login"
+              style={{ color: "#1976d2", textDecoration: "none" }}
+            >
+              Login
+            </a>
           </Typography>
         </Box>
       </form>
@@ -117,6 +143,7 @@ const SignUpPage = () => {
         <Alert severity={toast.severity}>{toast.message}</Alert>
       </Snackbar>
     </Container>
+    </div>
   );
 };
 
