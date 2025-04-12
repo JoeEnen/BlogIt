@@ -1,73 +1,72 @@
 .landingPage {
-   min-height: 100vh;
-    background: url('/src/assets/Images/hero.jpg') no-repeat center center/cover;
-    /*color: #fdfcfd;*/
-       z-index: 1;
-  }
-  
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    padding: 1.5rem 4rem;
-  }
-  
-  .Milogo {
-    font-weight: 600;
-    color: #17a758;
-  }
-  .Buttons {
-    display: flex;
-    gap: 1rem;
-    }
+  min-height: 100vh;
+  background: url("/src/assets/Images/hero.jpg") no-repeat center center/cover;
+  position: relative;
+  z-index: 0;
+}
 
- /* .Buttons button {
-    margin-left:9rem;
-    
-  }
-*/
-  
-  .heroS {
-    height: 80vh;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    justify-content: center;
-  }
-  .heroS::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    z-index: 1;
-  }
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.5rem 4rem;
+}
 
-  .heroSection .heroContent {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-  }
-  
-  .heroH {
+.Milogo {
+  font-weight: 600;
+  color: #17a758;
+}
 
-    font-weight: 800;
-    padding: 3rem;
-    /*margin-bottom: 5rem;*/
-    color: #ffffff;
-  }
+.Buttons {
+  display: flex;
+  gap: 1rem;
+}
 
+.heroS {
+  position: relative;
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
 
+.heroS::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
 
-  .heronarrate {
-     margin-bottom: 2rem;
-    color: #ffffff;
-    font-weight: 650;
-    padding-bottom: 4rem;
-  }
-  
-  .ctaButtons button {
-    font-weight: 550;
-  }
-  
+.heroContent {
+  position: relative;
+  z-index: 2;
+}
+
+.heroH {
+  font-weight: 800;
+  padding: 3rem;
+  color: #ffffff;
+}
+
+.heronarrate {
+  margin-bottom: 2rem;
+  color: #ffffff;
+  font-weight: 650;
+  padding-bottom: 4rem;
+}
+
+.ctaButtons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.ctaButtons button {
+  font-weight: 550;
+  z-index: 2;
+  position: relative;
+}
