@@ -7,6 +7,7 @@ import {
   Box,
   Container,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 import "./landingPage.css";
 
 const LandingPage = () => {
@@ -18,10 +19,20 @@ const LandingPage = () => {
             BlogIt
           </Typography>
           <div className="Buttons">
-            <Button  variant="contained" color="primary" href="/login">
+            <Button
+              component={Link}
+              to="/login"
+              variant="contained"
+              color="primary"
+            >
               Login
             </Button>
-            <Button variant="contained" color="primary" href="/signup">
+            <Button
+              component={Link}
+              to="/signup"
+              variant="contained"
+              color="primary"
+            >
               Sign Up
             </Button>
           </div>
@@ -34,25 +45,29 @@ const LandingPage = () => {
             Share your story with the world
           </Typography>
           <Typography variant="h4" className="heronarrate">
-            Join a community of writers and readers.  A fun way of living.
+            Join a community of writers and readers. A fun way of living.
           </Typography>
           <Box className="ctaButtons">
+            
             <Button
+              component={Link}
+              to="/signup"
               variant="contained"
               size="large"
               color="primary"
-              href="/signup"
             >
-              Write Your Fisrt Blog
+              Write Your First Blog
             </Button>
+            
             <Button
-               variant="contained"
+              component={Link}
+              to="/signup"
+              variant="contained"
               size="large"
-               color="primary"
-              href="/signup"
+              color="primary"
               style={{ marginLeft: "16px" }}
             >
-              EXPLORE EXITING STORIES
+              EXPLORE EXCITING STORIES
             </Button>
           </Box>
         </Container>

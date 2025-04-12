@@ -75,8 +75,8 @@ const SignUpPage = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Typography variant="h4" align="center" gutterBottom>
+    <Container maxWidth="md">
+      <Typography className="topa" variant="h4" align="center" gutterBottom>
         Join a community of readers and writers
       </Typography>
 
