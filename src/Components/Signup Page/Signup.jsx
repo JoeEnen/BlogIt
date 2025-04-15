@@ -11,7 +11,41 @@ import {
   Box,
 } from "@mui/material";
 
+import apiUrl from "../../Util/apiUrl";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query"
+
 import "./Signup.css";
+
+const { isPending, mutate } = useMutation({
+  mutationKey: ["register-user"],
+  mutationFn: async () => {
+     const response = await axios.post(`${apiUrl}/auth/register`,{
+      firstName,
+      lastName,
+      userName,
+      emailAddress,
+      password
+    });
+    return response.data;
+  },
+  onSuccess: () => {
+    navigate("/api/login");
+  },
+  onError: (err) => {
+    if (axios.isAxiosError(err)) {
+      const serverMessage = err.response.data.message;
+      setFormError(serverMessage);
+    } else {
+      setFormError("Something Went Wrong ");
+    }
+    },
+  });
+
+
+
+
+
 
 const SignUpPage = () => {
   const navigate = useNavigate();

@@ -13,6 +13,38 @@ import {
   Link,
 } from "@mui/material";
 
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import apiUrl from "../../Util/apiUrl";
+
+
+const { isPending, mutate } = useMutation({
+  mutationKey: ["login-user"],
+  mutationFn: async () => {
+    const response = await axios.post(
+     `${apiUrl}/auth/login`,
+      { identifier, password },
+      { withCredentials: true },
+    );
+    return response.data;
+  },
+  onSuccess: (data) => {
+    setUserInformation(data);
+    navigate("/blogs");
+  },
+  onError: (error) => {
+    if (axios.isAxiosError(error)) {
+      const serverMessage = error.response.data.message;
+      setFormError(serverMessage);
+    } else {
+      setFormError("something went wrong");
+    }
+    },
+  });
+
+
+
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({

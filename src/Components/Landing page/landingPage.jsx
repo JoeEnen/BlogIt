@@ -22,7 +22,7 @@ const LandingPage = () => {
           sx={{ display: "flex", justifyContent: "space-between" }}
         >
           <Typography
-            variant="h5"
+            variant="h2"
             className="Milogo"
             style={{ cursor: "pointer" }}
             onClick={() => navigate("/")}
