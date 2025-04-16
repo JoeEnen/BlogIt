@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./log.css";
 import {
   Container,
   TextField,
@@ -13,83 +12,45 @@ import {
   Link,
 } from "@mui/material";
 
-import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
 import apiUrl from "../../Util/apiUrl";
-
-
-const { isPending, mutate } = useMutation({
-  mutationKey: ["login-user"],
-  mutationFn: async () => {
-    const response = await axios.post(
-     `${apiUrl}/auth/login`,
-      { identifier, password },
-      { withCredentials: true },
-    );
-    return response.data;
-  },
-  onSuccess: (data) => {
-    setUserInformation(data);
-    navigate("/blogs");
-  },
-  onError: (error) => {
-    if (axios.isAxiosError(error)) {
-      const serverMessage = error.response.data.message;
-      setFormError(serverMessage);
-    } else {
-      setFormError("something went wrong");
-    }
-    },
-  });
-
-
+import "./log.css";
 
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    identifier: "",
-    password: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState({
-    open: false,
-    message: "",
-    severity: "info",
+  const [formData, setFormData] = useState({ identifier: "", password: "" });
+  const [toast, setToast] = useState({ open: false, message: "", severity: "info" });
+
+  const loginMutation = useMutation({
+    mutationFn: async () => {
+      const response = await axios.post(
+        `${apiUrl}/api/login`,
+        formData,
+        { withCredentials: true }
+      );
+      return response.data;
+    },
+    onSuccess: (data) => {
+      setToast({ open: true, message: "Welcome back!", severity: "success" });
+      setTimeout(() => navigate("/blogs"), 1500);
+    },
+    onError: (error) => {
+      const errorMsg = axios.isAxiosError(error)
+        ? error?.response?.data?.message
+        : "Something went wrong";
+      setToast({ open: true, message: errorMsg, severity: "error" });
+    },
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "sorry, wrong login credentials");
-      }
-
-      setToast({
-        open: true,
-        message: "Welcome back! Redirecting...",
-        severity: "Hello,you are in.",
-      });
-      setTimeout(() => navigate("/blogs"), 2000);
-    } catch (error) {
-      setToast({ open: true, message: error.message, severity: "error" });
-    } finally {
-      setLoading(false);
-    }
+    loginMutation.mutate();
   };
 
   return (
@@ -109,12 +70,11 @@ const LoginPage = () => {
             onChange={handleChange}
             required
           />
-
           <TextField
             margin="normal"
             fullWidth
             type="password"
-            label="Type your Password..."
+            label="Password"
             name="password"
             value={formData.password}
             onChange={handleChange}
@@ -127,17 +87,17 @@ const LoginPage = () => {
               variant="contained"
               color="primary"
               fullWidth
-              disabled={loading}
+              disabled={loginMutation.isPending}
             >
-              {loading ? <CircularProgress size={24} /> : "Sign In"}
+              {loginMutation.isPending ? <CircularProgress size={24} /> : "Sign In"}
             </Button>
           </Box>
 
           <Box mt={2} textAlign="center">
             <Typography variant="body2">
-              Opps, Don't have an account? Create one {" "}
+              Don't have an account?{" "}
               <Link href="/signup" underline="none" color="primary">
-                Here
+                Create one
               </Link>
             </Typography>
           </Box>
