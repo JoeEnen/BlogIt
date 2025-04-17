@@ -54,7 +54,7 @@ const SignUpPage = () => {
 
   const signupMutation = useMutation({
     mutationFn: async (newUser) => {
-      const response = await axios.post(`${apiUrl}/api/signup`, newUser);
+      const response = await axios.post(`${apiUrl}/signup`, newUser);
       return response.data;
     },
     onSuccess: () => {
