@@ -17,22 +17,21 @@ import { useMutation } from "@tanstack/react-query";
 import apiUrl from "../../Util/apiUrl";
 import "./log.css";
 
-
-const LoginPage = () => {
+const LoginPage = ({ setUser }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ identifier: "", password: "" });
   const [toast, setToast] = useState({ open: false, message: "", severity: "info" });
 
   const loginMutation = useMutation({
     mutationFn: async () => {
-      const response = await axios.post(
-        `${apiUrl}/api/login`,
-        formData,
-        { withCredentials: true }
-      );
+      const response = await axios.post(`${apiUrl}/api/login`, formData, {
+        withCredentials: true,
+      });
       return response.data;
     },
     onSuccess: (data) => {
+      setUser(data.user);
+
       setToast({ open: true, message: "Welcome back!", severity: "success" });
       setTimeout(() => navigate("/blogs"), 1500);
     },
