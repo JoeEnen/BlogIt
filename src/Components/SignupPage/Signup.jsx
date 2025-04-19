@@ -11,11 +11,11 @@ import {
   Box,
 } from "@mui/material";
 
-
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import apiUrl from "../../Util/apiUrl";
 
+import Navbar from "../LandingPage/navbar" ; 
 import "./Signup.css";
 
 const SignUpPage = () => {
@@ -83,58 +83,62 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="yeah">
-      <Container className="yoo" maxWidth="md">
-        <Typography className="topa" variant="h4" align="center" gutterBottom>
-          Start your journey with us. Connect with people of your caliber.
-        </Typography>
+    <> 
+      <Navbar activePage="signup" />
 
-        <form onSubmit={handleSubmit} noValidate>
-          {["firstName", "lastName", "email", "username", "password", "confirmPassword"].map((field) => (
-            <TextField
-              key={field}
-              margin="normal"
-              fullWidth
-              type={field.includes("password") ? "password" : "text"}
-              label={field.replace(/([A-Z])/g, " $1")}
-              name={field}
-              value={formData[field]}
-              onChange={handleChange}
-              error={!!errors[field]}
-              helperText={errors[field]}
-            />
-          ))}
-
-          <Box mt={2} display="flex" justifyContent="center">
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={signupMutation.isPending}
-            >
-              {signupMutation.isPending ? <CircularProgress size={24} /> : "Create Account"}
-            </Button>
-          </Box>
-        </form>
-
-        <Box mt={2} textAlign="center">
-          <Typography variant="body2">
-            Already have an account?{" "}
-            <a href="/login" style={{ color: "#1976d2", textDecoration: "none" }}>
-              Login
-            </a>
+      <div className="yeah">
+        <Container className="yoo" maxWidth="md">
+          <Typography className="topa" variant="h4" align="center" gutterBottom>
+            Start your journey with us. Connect with people of your caliber.
           </Typography>
-        </Box>
 
-        <Snackbar
-          open={toast.open}
-          autoHideDuration={4000}
-          onClose={() => setToast({ ...toast, open: false })}
-        >
-          <Alert severity={toast.severity}>{toast.message}</Alert>
-        </Snackbar>
-      </Container>
-    </div>
+          <form onSubmit={handleSubmit} noValidate>
+            {["firstName", "lastName", "email", "username", "password", "confirmPassword"].map((field) => (
+              <TextField
+                key={field}
+                margin="normal"
+                fullWidth
+                type={field.includes("password") ? "password" : "text"}
+                label={field.replace(/([A-Z])/g, " $1")}
+                name={field}
+                value={formData[field]}
+                onChange={handleChange}
+                error={!!errors[field]}
+                helperText={errors[field]}
+              />
+            ))}
+
+            <Box mt={2} display="flex" justifyContent="center">
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={signupMutation.isPending}
+              >
+                {signupMutation.isPending ? <CircularProgress size={24} /> : "Create Account"}
+              </Button>
+            </Box>
+          </form>
+
+          <Box mt={2} textAlign="center">
+            <Typography variant="body2">
+              Already have an account?{" "}
+              <a href="/login" style={{ color: "#1976d2", textDecoration: "none" }}>
+                Login
+              </a>
+            </Typography>
+          </Box>
+
+          <Snackbar
+            open={toast.open}
+            autoHideDuration={4000}
+            onClose={() => setToast({ ...toast, open: false })}
+          >
+            <Alert severity={toast.severity}>{toast.message}</Alert>
+          </Snackbar>
+        </Container>
+      </div>
+    </>
   );
 };
 

@@ -15,6 +15,7 @@ import {
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import apiUrl from "../../Util/apiUrl";
+import Navbar from "../LandingPage/navbar"; 
 import "./log.css";
 
 const LoginPage = ({ setUser }) => {
@@ -31,7 +32,6 @@ const LoginPage = ({ setUser }) => {
     },
     onSuccess: (data) => {
       setUser(data.user);
-
       setToast({ open: true, message: "Welcome back!", severity: "success" });
       setTimeout(() => navigate("/blogs"), 1500);
     },
@@ -53,64 +53,67 @@ const LoginPage = ({ setUser }) => {
   };
 
   return (
-    <Box sx={{ backgroundColor: "#f5f5f5", minHeight: "100vh", py: 7 }}>
-      <Container maxWidth="md" className="yello">
-        <Typography variant="h4" align="center" gutterBottom>
-          Log in to your BlogIt Account
-        </Typography>
+    <>
+      <Navbar activePage="login" />
+      <div className="logWrap">
+        <Container className="loginBox" maxWidth="md">
+          <Typography variant="h4" align="center" gutterBottom>
+            Log in to your BlogIt Account
+          </Typography>
 
-        <form onSubmit={handleSubmit} noValidate>
-          <TextField
-            margin="normal"
-            fullWidth
-            label="Enter Username/Email"
-            name="identifier"
-            value={formData.identifier}
-            onChange={handleChange}
-            required
-          />
-          <TextField
-            margin="normal"
-            fullWidth
-            type="password"
-            label="Password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-
-          <Box mt={3} display="flex" justifyContent="center">
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
+          <form onSubmit={handleSubmit} noValidate>
+            <TextField
+              margin="normal"
               fullWidth
-              disabled={loginMutation.isPending}
-            >
-              {loginMutation.isPending ? <CircularProgress size={24} /> : "Sign In"}
-            </Button>
-          </Box>
+              label="Enter Username/Email"
+              name="identifier"
+              value={formData.identifier}
+              onChange={handleChange}
+              required
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              type="password"
+              label="Password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
 
-          <Box mt={2} textAlign="center">
-            <Typography variant="body2">
-              Don't have an account?{" "}
-              <Link href="/signup" underline="none" color="primary">
-                Create one
-              </Link>
-            </Typography>
-          </Box>
-        </form>
+            <Box mt={3} display="flex" justifyContent="center">
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                disabled={loginMutation.isPending}
+              >
+                {loginMutation.isPending ? <CircularProgress size={24} /> : "Sign In"}
+              </Button>
+            </Box>
 
-        <Snackbar
-          open={toast.open}
-          autoHideDuration={4000}
-          onClose={() => setToast({ ...toast, open: false })}
-        >
-          <Alert severity={toast.severity}>{toast.message}</Alert>
-        </Snackbar>
-      </Container>
-    </Box>
+            <Box mt={2} textAlign="center">
+              <Typography variant="body2">
+                Don't have an account?{" "}
+                <Link href="/signup" underline="none" color="primary">
+                  Create one
+                </Link>
+              </Typography>
+            </Box>
+          </form>
+
+          <Snackbar
+            open={toast.open}
+            autoHideDuration={4000}
+            onClose={() => setToast({ ...toast, open: false })}
+          >
+            <Alert severity={toast.severity}>{toast.message}</Alert>
+          </Snackbar>
+        </Container>
+      </div>
+    </>
   );
 };
 

@@ -1,3 +1,16 @@
 .yello {
-    padding-top: 3rem;
+    padding-top: 5rem;
 }
+.logWrap {
+    background-color: rgb(223, 223, 190);
+    min-height: 100vh;
+    padding-top: 8rem;
+  }
+  
+  .loginBox {
+    padding: 2rem;
+    background-color: rgb(243, 219, 219);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
