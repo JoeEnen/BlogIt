@@ -1,22 +1,42 @@
 import React, { useEffect, useState } from "react";
 import {
-  Box, Container, TextField, Typography, Button, Divider, Snackbar, Alert
+  Box,
+  Container,
+  TextField,
+  Typography,
+  Button,
+  Divider,
+  Snackbar,
+  Alert,
+  Avatar,
+  IconButton,
 } from "@mui/material";
+import { PhotoCamera, Delete } from "@mui/icons-material";
 import axios from "axios";
+import NavbarMain from "../navbarmain";
+import apiUrl from "../../Util/apiUrl";
 import "./profile.css";
 
 const ProfilePage = () => {
   const [profile, setProfile] = useState({});
+  const [passwords, setPasswords] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
   const [toast, setToast] = useState({ open: false, message: "", severity: "success" });
+  const [imageFile, setImageFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
 
   const token = localStorage.getItem("token");
 
   const fetchProfile = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/me", {
-        headers: { Authorization: `Bearer ${token}` }
+      const { data } = await axios.get(`${apiUrl}/api/me`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
       setProfile(data);
+      setPreviewUrl(data.profilePicture ? `${apiUrl}${data.profilePicture}` : "");
     } catch (err) {
       console.error(err);
     }
@@ -30,53 +50,222 @@ const ProfilePage = () => {
     setProfile((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = async () => {
+  const handlePasswordChange = (e) => {
+    setPasswords({ ...passwords, [e.target.name]: e.target.value });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const handleImageDelete = () => {
+    setImageFile(null);
+    setPreviewUrl("");
+    setProfile((prev) => ({ ...prev, profilePicture: "" }));
+  };
+
+  const updateProfile = async () => {
     try {
-      await axios.put("http://localhost:5000/api/profile", profile, {
+      const formData = new FormData();
+      Object.entries(profile).forEach(([key, val]) => {
+        if (val) formData.append(key, val);
+      });
+      if (imageFile) {
+        formData.append("profilePicture", imageFile);
+      }
+
+      await axios.put(`${apiUrl}/api/profile`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      setToast({ open: true, message: "Profile updated successfully!", severity: "success" });
+    } catch (err) {
+      setToast({
+        open: true,
+        message: err.response?.data?.message || "Error updating profile",
+        severity: "error",
+      });
+    }
+  };
+
+  const updatePersonalInfo = async () => {
+    try {
+      await axios.put(`${apiUrl}/api/personal`, profile, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setToast({ open: true, message: "Profile updated!", severity: "success" });
+      setToast({ open: true, message: "Personal info updated", severity: "success" });
     } catch (err) {
-      setToast({ open: true, message: err.response?.data?.message || "Error", severity: "error" });
+      setToast({
+        open: true,
+        message: err.response?.data?.message || "Error updating info",
+        severity: "error",
+      });
+    }
+  };
+
+  const updatePassword = async () => {
+    if (passwords.newPassword !== passwords.confirmPassword) {
+      return setToast({ open: true, message: "Passwords do not match", severity: "error" });
+    }
+
+    try {
+      await axios.put(
+        `${apiUrl}/api/password`,
+        { oldPassword: passwords.oldPassword, newPassword: passwords.newPassword },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setToast({ open: true, message: "Password updated", severity: "success" });
+    } catch (err) {
+      setToast({
+        open: true,
+        message: err.response?.data?.message || "Failed to update password",
+        severity: "error",
+      });
     }
   };
 
   return (
-    <Box className="profileBg">
-      <Container maxWidth="md" className="profileCard">
-        <Typography variant="h4" gutterBottom>My Profile</Typography>
+    <>
+      <NavbarMain activePage="profile" />
 
-        <TextField fullWidth margin="normal" name="phone" label="Phone Number"
-          value={profile.phone || ""} onChange={handleChange} />
-        <TextField fullWidth margin="normal" name="occupation" label="Occupation"
-          value={profile.occupation || ""} onChange={handleChange} />
-        <TextField fullWidth margin="normal" name="bio" label="Bio"
-          value={profile.bio || ""} onChange={handleChange} />
-        <TextField fullWidth margin="normal" name="status" label="Status Text"
-          value={profile.status || ""} onChange={handleChange} />
-        <TextField fullWidth margin="normal" name="secondaryEmail" label="Secondary Email"
-          value={profile.secondaryEmail || ""} onChange={handleChange} />
+      <Box className="profileBg" sx={{ pt: 12, pb: 6, backgroundColor: "#f0f2f9", minHeight: "100vh" }}>
+        <Container maxWidth="md" className="profileCard" sx={{ backgroundColor: "#fff3e0", borderRadius: 3, p: 4 }}>
+          <Typography
+            variant="h4"
+            gutterBottom
+            sx={{
+              backgroundColor: "#ffe0b2",
+              padding: "0.5rem 1rem",
+              borderRadius: 2,
+              fontWeight: "bold",
+              color: "#e65100",
+            }}
+          >
+            My Profile
+          </Typography>
+ 
+          <Box display="flex" alignItems="center" gap={2} mb={3}>
+            <Avatar src={previewUrl} sx={{ width: 70, height: 70, bgcolor: "#a5d6a7" }}>
+              {!previewUrl && profile.email?.[0]?.toUpperCase()}
+            </Avatar>
+            <label htmlFor="upload-img">
+              <input
+                accept="image/*"
+                id="upload-img"
+                type="file"
+                hidden
+                onChange={handleImageChange}
+              />
+              <IconButton color="primary" component="span">
+                <PhotoCamera />
+              </IconButton>
+            </label>
+            {previewUrl && (
+              <IconButton color="error" onClick={handleImageDelete}>
+                <Delete />
+              </IconButton>
+            )}
+          </Box>
+ 
+          <Typography variant="h6" color="text.secondary" gutterBottom>
+            Profile Info
+          </Typography>
+          {["phone", "occupation", "bio", "status", "secondaryEmail"].map((field) => (
+            <TextField
+              key={field}
+              fullWidth
+              name={field}
+              label={field.replace(/([A-Z])/g, " $1")}
+              value={profile[field] || ""}
+              onChange={handleChange}
+              margin="normal"
+              sx={{ backgroundColor: "#f9fbe7", borderRadius: 1 }}
+            />
+          ))}
 
-        <Divider sx={{ my: 3 }} />
+          <Button onClick={updateProfile} variant="contained" sx={{ mt: 2 }} color="primary">
+            Update Profile
+          </Button>
 
-        <TextField fullWidth margin="normal" name="firstName" label="First Name"
-          value={profile.firstName || ""} onChange={handleChange} />
-        <TextField fullWidth margin="normal" name="lastName" label="Last Name"
-          value={profile.lastName || ""} onChange={handleChange} />
-        <TextField fullWidth margin="normal" name="email" label="Email"
-          value={profile.email || ""} onChange={handleChange} />
-        <TextField fullWidth margin="normal" name="username" label="Username"
-          value={profile.username || ""} onChange={handleChange} />
+          <Divider sx={{ my: 4 }} />
 
-        <Box mt={3}>
-          <Button variant="contained" color="primary" onClick={handleSubmit}>Update Profile</Button>
-        </Box>
+          <Typography variant="h6" color="text.secondary" gutterBottom>
+            Personal Info
+          </Typography>
+          {["firstName", "lastName", "email", "username"].map((field) => (
+            <TextField
+              key={field}
+              fullWidth
+              name={field}
+              label={field.replace(/([A-Z])/g, " $1")}
+              value={profile[field] || ""}
+              onChange={handleChange}
+              margin="normal"
+              sx={{ backgroundColor: "#e8f5e9", borderRadius: 1 }}
+            />
+          ))}
 
-        <Snackbar open={toast.open} autoHideDuration={4000} onClose={() => setToast({ ...toast, open: false })}>
+          <Button onClick={updatePersonalInfo} variant="contained" sx={{ mt: 2 }} color="primary">
+            Update Personal Info
+          </Button>
+
+          <Divider sx={{ my: 4 }} />
+
+          <Typography variant="h6" color="text.secondary" gutterBottom>
+            Update Password
+          </Typography>
+          <TextField
+            fullWidth
+            type="password"
+            name="oldPassword"
+            label="Old Password"
+            value={passwords.oldPassword}
+            onChange={handlePasswordChange}
+            margin="normal"
+            sx={{ backgroundColor: "#e1f5fe", borderRadius: 1 }}
+          />
+          <TextField
+            fullWidth
+            type="password"
+            name="newPassword"
+            label="New Password"
+            value={passwords.newPassword}
+            onChange={handlePasswordChange}
+            margin="normal"
+            sx={{ backgroundColor: "#e1f5fe", borderRadius: 1 }}
+          />
+          <TextField
+            fullWidth
+            type="password"
+            name="confirmPassword"
+            label="Confirm New Password"
+            value={passwords.confirmPassword}
+            onChange={handlePasswordChange}
+            margin="normal"
+            sx={{ backgroundColor: "#e1f5fe", borderRadius: 1 }}
+          />
+
+          <Button onClick={updatePassword} variant="contained" sx={{ mt: 2 }} color="primary">
+            Update Password
+          </Button>
+        </Container>
+
+        <Snackbar
+          open={toast.open}
+          autoHideDuration={4000}
+          onClose={() => setToast({ ...toast, open: false })}
+        >
           <Alert severity={toast.severity}>{toast.message}</Alert>
         </Snackbar>
-      </Container>
-    </Box>
+      </Box>
+    </>
   );
 };
 

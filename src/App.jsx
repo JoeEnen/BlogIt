@@ -7,8 +7,7 @@ import LoginPage from "./Components/LoginPage/log";
 import BlogList from "./Components/blogListPage/blogL";
 import WritePage from "./Components/writePage/write";
 import ArticlePage from "./Components/articlePage/article";
-import MyBlogs from "./Components/myBlogs/mblogs";
-//import EditBlog from "./Components/editBlogPage/editBlog"; 
+import MyBlogs from "./Components/myBlogs/mblogs"; 
 import ProfilePage from "./Components/profilePage/profile"; 
 
 function App() {
@@ -41,10 +40,10 @@ function App() {
           path="/myblogs"
           element={user ? <MyBlogs user={user} /> : <LoginRedirect />}
         />
-        <Route
+       {/*  <Route
           path="/edit/:id"
           element={user ? <EditBlog user={user} /> : <LoginRedirect />}
-        />
+        /> */}
         <Route
           path="/profile"
           element={user ? <ProfilePage user={user} /> : <LoginRedirect />}

@@ -17,6 +17,8 @@
   display: block;
   font-weight: 600;
   margin-bottom: 2rem;
+  margin-top: 1rem;
+  /*color: #444;*/
 }
 
 .editor {
@@ -24,3 +26,4 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
+
